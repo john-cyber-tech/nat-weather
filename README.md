@@ -16,7 +16,9 @@ No API key is required. All data comes from US government sources.
 
 | Search | Weather Report |
 |--------|---------------|
-| ![Search form](https://github.com/john-cyber-tech/nat-weather/assets/search.png) | ![Weather report](https://github.com/john-cyber-tech/nat-weather/assets/report.png) |
+| ![Search form](https://github.com/john-cyber-tech/nat-weather/assets/search.png) <img width="511" height="558" alt="weather" src="https://github.com/user-attachments/assets/096db35c-9194-47ab-9eec-3fa7cbdd4d53" />
+| ![Weather report](https://github.com/john-cyber-tech/nat-weather/assets/report.png) <img width="892" height="974" alt="weatherscreen" src="https://github.com/user-attachments/assets/9edd7c26-7e12-41e3-85f9-c09fa0733c64" />
+|
 
 ---
 
