@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+  <div class="hero-content">
+    <h1>What's the weather like?</h1>
+    <p class="hero-sub">Enter a US ZIP code for a plain-English weather report from the National Weather Service.</p>
+
+    {% if error %}
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠️</span> {{ error }}
+    </div>
+    {% endif %}
+
+    <form action="/weather" method="POST" class="search-form">
+      <div class="input-group primary-input">
+        <label for="zipcode">ZIP Code</label>
+        <input
+          type="text"
+          id="zipcode"
+          name="zipcode"
+          placeholder="e.g. 33160"
+          maxlength="10"
+          pattern="\d{5}(-\d{4})?"
+          inputmode="numeric"
+          autocomplete="postal-code"
+        />
+      </div>
+
+      <div class="divider"><span>or</span></div>
+
+      <div class="latlon-row">
+        <div class="input-group">
+          <label for="lat">Latitude</label>
+          <input type="text" id="lat" name="lat" placeholder="e.g. 25.9583" inputmode="decimal" />
+        </div>
+        <div class="input-group">
+          <label for="lon">Longitude</label>
+          <input type="text" id="lon" name="lon" placeholder="e.g. -80.1804" inputmode="decimal" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">Get Weather Report</button>
+    </form>
+
+    <div class="example-links">
+      <p>Try a sample location:</p>
+      <div class="chips">
+        <button class="chip" onclick="setZip('10001')">New York, NY</button>
+        <button class="chip" onclick="setZip('90210')">Beverly Hills, CA</button>
+        <button class="chip" onclick="setZip('33160')">Miami, FL</button>
+        <button class="chip" onclick="setZip('60601')">Chicago, IL</button>
+        <button class="chip" onclick="setZip('98101')">Seattle, WA</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setZip(z) {
+    document.getElementById('zipcode').value = z;
+    document.getElementById('lat').value = '';
+    document.getElementById('lon').value = '';
+    document.querySelector('.search-form').submit();
+  }
+</script>
+{% endblock %}

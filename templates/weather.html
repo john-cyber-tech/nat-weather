@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Weather for {{ location }} — National Weather Reader{% endblock %}
+
+{% block content %}
+
+<!-- Back link -->
+<div class="back-bar">
+  <a href="/" class="back-link">← Search again</a>
+</div>
+
+<!-- Location heading -->
+<div class="location-heading">
+  <h1>{{ location }}</h1>
+  <p class="coords">{{ "%.4f"|format(lat) }}, {{ "%.4f"|format(lon) }} &nbsp;·&nbsp; As of {{ fetched_at }}</p>
+  {% if station %}<p class="station">Observations from {{ station }}</p>{% endif %}
+</div>
+
+<!-- Active alerts -->
+{% if alerts %}
+<div class="alerts-section">
+  {% for alert in alerts %}
+  <div class="alert-banner severity-{{ alert.severity | lower }}">
+    <span class="alert-event">⚠️ {{ alert.event }}</span>
+    <span class="alert-headline">{{ alert.headline }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Current conditions -->
+{% if current %}
+<section class="card current-card">
+  <h2>Right Now</h2>
+  <div class="current-main">
+    <div class="current-temp">
+      <span class="big-emoji">{{ current.emoji }}</span>
+      <span class="big-temp">{{ current.temp_f }}°F</span>
+      <span class="temp-c">({{ current.temp_c }}°C)</span>
+    </div>
+    <div class="current-desc">
+      <p class="condition-label">{{ current.description or "Conditions unavailable" }}</p>
+      {% if current.feels_f and current.feels_f != current.temp_f %}
+      <p class="feels-like">Feels like {{ current.feels_f }}°F</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="current-details">
+    {% if current.humidity is not none %}
+    <div class="detail-item">
+      <span class="detail-icon">💧</span>
+      <span class="detail-label">Humidity</span>
+      <span class="detail-value">{{ current.humidity }}%</span>
+    </div>
+    {% endif %}
+
+    {% if current.dewpoint_f is not none %}
+    <div class="detail-item">
+      <span class="detail-icon">🌡️</span>
+      <span class="detail-label">Dew Point</span>
+      <span class="detail-value">{{ current.dewpoint_f }}°F</span>
+    </div>
+    {% endif %}
+
+    {% if current.wind_mph is not none %}
+    <div class="detail-item">
+      <span class="detail-icon">💨</span>
+      <span class="detail-label">Wind</span>
+      <span class="detail-value">
+        {% if current.wind_dir %}{{ current.wind_dir }} {% endif %}{{ current.wind_mph }} mph
+        {% if current.wind_gust_mph and current.wind_gust_mph > current.wind_mph %}
+          <small>(gusts {{ current.wind_gust_mph }} mph)</small>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
+
+    {% if current.visibility_mi is not none %}
+    <div class="detail-item">
+      <span class="detail-icon">👁️</span>
+      <span class="detail-label">Visibility</span>
+      <span class="detail-value">{{ current.visibility_mi }} miles</span>
+    </div>
+    {% endif %}
+
+    {% if current.barometer is not none %}
+    <div class="detail-item">
+      <span class="detail-icon">🔵</span>
+      <span class="detail-label">Pressure</span>
+      <span class="detail-value">{{ current.barometer }} inHg</span>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<section class="card current-card">
+  <h2>Right Now</h2>
+  <p class="muted">Current observations are not available for this location. See the forecast below.</p>
+</section>
+{% endif %}
+
+<!-- 7-day forecast -->
+{% if periods %}
+<section class="forecast-section">
+  <h2>7-Day Forecast</h2>
+  <div class="forecast-grid">
+    {% for period in periods %}
+    <div class="forecast-card {{ 'night-card' if not period.is_day else '' }}">
+      <div class="fc-period">{{ period.name }}</div>
+      <div class="fc-emoji">{{ period.emoji }}</div>
+      <div class="fc-temp">
+        {{ period.temp }}°{{ period.temp_unit }}
+      </div>
+      <div class="fc-short">{{ period.short }}</div>
+      {% if period.precip is not none and period.precip > 0 %}
+      <div class="fc-precip">🌧️ {{ period.precip | int }}% chance of rain</div>
+      {% endif %}
+      {% if period.wind_speed %}
+      <div class="fc-wind">💨 {{ period.wind_speed }}{% if period.wind_dir %} {{ period.wind_dir }}{% endif %}</div>
+      {% endif %}
+      <details class="fc-details-toggle">
+        <summary>Full forecast</summary>
+        <p class="fc-detail-text">{{ period.detail }}</p>
+      </details>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
